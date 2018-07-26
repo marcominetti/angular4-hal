@@ -62,7 +62,7 @@ var ResourceService = /** @class */ (function () {
         return observable.pipe(map(function (response) { return ResourceHelper.instantiateResource(result, response); }), catchError(function (error) { return observableThrowError(error); }));
     };
     ResourceService.prototype.customQuery = function (type, query, _embedded, options) {
-        var uri = this.getResourceUrl() + query;
+        var uri = this.getResourceUrl().concat('/', query);
         var params = ResourceHelper.optionParams(new HttpParams(), options);
         var result = ResourceHelper.createEmptyResult(this.resource, _embedded);
         //this.setUrls(result);

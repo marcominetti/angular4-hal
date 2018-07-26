@@ -10,7 +10,7 @@
   "typings": "dist/index.d.ts",
   "scripts": {
     "clean": "node ./scripts/deleteDist",
-    "build": "npm run tsc",
+    "build": "node ./scripts/deleteDist && npm run tsc",
     "tsc": "node_modules/.bin/ngc",
     "test": "mocha -r ts-node/register --config=test/test-config.json test/*.test.ts"
   },

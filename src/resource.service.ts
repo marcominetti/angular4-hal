@@ -87,7 +87,7 @@ export class ResourceService {
     }
 
     public customQuery<T extends Resource>(type: { new(): T }, query: string, _embedded: string, options?: HalOptions): Observable<ResourceArray<T>> {
-        const uri = this.getResourceUrl() + query;
+        const uri = this.getResourceUrl().concat('/', query);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(this.resource,_embedded);
 

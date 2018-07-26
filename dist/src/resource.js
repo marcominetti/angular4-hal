@@ -22,7 +22,7 @@ var Resource = /** @class */ (function () {
         var params = ResourceHelper.optionParams(new HttpParams(), options);
         var result = ResourceHelper.createEmptyResult(relation, isNullOrUndefined(_embedded) ? "_embedded" : _embedded);
         if (!isNullOrUndefined(this._links) && !isNullOrUndefined(this._links[relation])) {
-            var observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(relation, this._links[relation].href), {
+            var observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(relation, this._links[relation].href).replace('{?projection}', ''), {
                 headers: ResourceHelper.headers,
                 params: params
             });

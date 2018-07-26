@@ -39,7 +39,7 @@ export abstract class Resource {
         const params = ResourceHelper.optionParams(new HttpParams(), options);
         const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(relation, isNullOrUndefined(_embedded) ? "_embedded" : _embedded);
         if (!isNullOrUndefined(this._links) && !isNullOrUndefined(this._links[relation])) {
-            let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(relation, this._links[relation].href), {
+            let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(relation, this._links[relation].href).replace('{?projection}', ''), {
                 headers: ResourceHelper.headers,
                 params: params
             });
