@@ -1,0 +1,32 @@
+import { Observable } from 'rxjs';
+import { Sort } from './sort';
+import { ArrayInterface } from './array-interface';
+import { Resource } from './resource';
+export declare class ResourceArray<T extends Resource> implements ArrayInterface<T> {
+    sortInfo: Sort[];
+    proxyUrl: string;
+    rootUrl: string;
+    self_uri: string;
+    next_uri: string;
+    prev_uri: string;
+    first_uri: string;
+    last_uri: string;
+    _embedded: any;
+    totalElements: number;
+    totalPages: number;
+    pageNumber: number;
+    pageSize: number;
+    result: T[];
+    push: (el: T) => void;
+    length: () => number;
+    private init;
+    next: (type: new () => T) => Observable<ResourceArray<T>>;
+    prev: (type: new () => T) => Observable<ResourceArray<T>>;
+    first: (type: new () => T) => Observable<ResourceArray<T>>;
+    last: (type: new () => T) => Observable<ResourceArray<T>>;
+    page: (type: new () => T, pageNumber: number) => Observable<ResourceArray<T>>;
+    sortElements: (type: new () => T, ...sort: Sort[]) => Observable<ResourceArray<T>>;
+    size: (type: new () => T, size: number) => Observable<ResourceArray<T>>;
+    private addSortInfo(uri);
+    private static replaceOrAdd(query, field, value);
+}
