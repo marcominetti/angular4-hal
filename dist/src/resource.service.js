@@ -170,7 +170,7 @@ var ResourceService = /** @class */ (function () {
         return resourceArray.size(type, size);
     };
     ResourceService.prototype.getResourceUrl = function () {
-        return ResourceHelper.getURL(this.resource);
+        return ResourceHelper.getURL(this.resource) + this.resource;
     };
     ResourceService.decorators = [
         { type: Injectable },

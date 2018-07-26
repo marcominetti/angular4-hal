@@ -219,7 +219,7 @@ export class ResourceService {
     }
 
     private getResourceUrl(): string {
-        return ResourceHelper.getURL(this.resource);
+        return ResourceHelper.getURL(this.resource) + this.resource;
     }
 
     // private setUrls<T extends Resource>(result: ResourceArray<T>) {
