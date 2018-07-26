@@ -5,8 +5,8 @@ export interface ExternalConfigurationHandlerInterface {
     deserialize();
     serialize();
 
-    getProxyUri(): string;
-    getRootUri(): string;
+    getProxyUriMap(): Map<string,string>;
+    getRootUriMap(): Map<string,string>;
     getHttp(): HttpClient;
 
 

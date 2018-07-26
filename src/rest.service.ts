@@ -28,6 +28,7 @@ export class RestService<T extends Resource> {
         this.type = type;
         this.resource = resource;
         this.resourceService = injector.get(ResourceService);
+        this.resourceService.resource = resource;
         if (!isNullOrUndefined(_embedded))
             this._embedded = _embedded;
     }
@@ -58,9 +59,9 @@ export class RestService<T extends Resource> {
         return this.resourceService.get(this.type, this.resource, id);
     }
 
-    public getBySelfLink(selfLink: string): Observable<T> {
-        return this.resourceService.getBySelfLink(this.type, selfLink);
-    }
+    // public getBySelfLink(selfLink: string): Observable<T> {
+    //     return this.resourceService.getBySelfLink(this.type, selfLink);
+    // }
 
     public search(query: string, options?: HalOptions): Observable<T[]> {
         return this.resourceService.search(this.type, query, this.resource, this._embedded, options).pipe(
@@ -94,13 +95,13 @@ export class RestService<T extends Resource> {
             }));
     }
 
-    public getByRelationArray(relation: string, builder?: SubTypeBuilder): Observable<T[]> {
-        return this.resourceService.getByRelationArray(this.type, relation, this._embedded, builder).pipe(
-            map((resourceArray: ResourceArray<T>) => {
-                this.resourceArray = resourceArray;
-                return resourceArray.result;
-            }));
-    }
+    // public getByRelationArray(relation: string, builder?: SubTypeBuilder): Observable<T[]> {
+    //     return this.resourceService.getByRelationArray(this.type, relation, this._embedded, builder).pipe(
+    //         map((resourceArray: ResourceArray<T>) => {
+    //             this.resourceArray = resourceArray;
+    //             return resourceArray.result;
+    //         }));
+    // }
 
     public getByRelation(relation: string): Observable<T> {
         return this.resourceService.getByRelation(this.type, relation);

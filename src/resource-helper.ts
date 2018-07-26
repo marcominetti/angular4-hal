@@ -9,8 +9,8 @@ import * as url from 'url';
 export class ResourceHelper {
 
     private static _headers: HttpHeaders;
-    private static proxy_uri: string;
-    private static root_uri: string;
+    private static proxy_uri_map: Map<string,string>;
+    private static root_uri_map: Map<string,string>;
     private static http: HttpClient;
 
     public static get headers(): HttpHeaders {
@@ -70,8 +70,9 @@ export class ResourceHelper {
         return result as Object;
     }
 
-    static createEmptyResult<T extends Resource>(_embedded: string): ResourceArray<T> {
+    static createEmptyResult<T extends Resource>(resource: string, _embedded: string): ResourceArray<T> {
         let resourceArray: ResourceArray<T> = new ResourceArray<T>();
+        resourceArray.resource = resource;
         resourceArray._embedded = _embedded;
         return resourceArray;
     }
@@ -152,18 +153,20 @@ export class ResourceHelper {
         return entity;
     }
 
-    static setProxyUri(proxy_uri: string) {
-        ResourceHelper.proxy_uri = proxy_uri;
+    static setProxyUriMap(proxy_uri: Map<string,string>) {
+        ResourceHelper.proxy_uri_map = proxy_uri;
     }
 
-    static setRootUri(root_uri: string) {
-        ResourceHelper.root_uri = root_uri;
+    static setRootUriMap(root_uri: Map<string,string>) {
+        ResourceHelper.root_uri_map = root_uri;
     }
 
-    public static getURL(): string {
-        return ResourceHelper.proxy_uri && ResourceHelper.proxy_uri != '' ?
-            ResourceHelper.addSlash(ResourceHelper.proxy_uri) :
-            ResourceHelper.addSlash(ResourceHelper.root_uri);
+    public static getURL(resource: string): string {
+        let proxy_uri = ResourceHelper.proxy_uri_map[resource] || ResourceHelper.proxy_uri_map['*'];
+        let root_uri = ResourceHelper.root_uri_map[resource] || ResourceHelper.root_uri_map['*'];
+        return proxy_uri && proxy_uri != '' ?
+            ResourceHelper.addSlash(proxy_uri) :
+            ResourceHelper.addSlash(root_uri);
     }
 
     private static addSlash(uri: string): string {
@@ -173,10 +176,12 @@ export class ResourceHelper {
         return uri;
     }
 
-    public static getProxy(url: string): string {
-        if (!ResourceHelper.proxy_uri || ResourceHelper.proxy_uri == '')
+    public static getProxy(resource: string, url: string): string {
+        let proxy_uri = ResourceHelper.proxy_uri_map[resource] || ResourceHelper.proxy_uri_map['*'];
+        let root_uri = ResourceHelper.root_uri_map[resource] || ResourceHelper.root_uri_map['*'];
+        if (!proxy_uri || proxy_uri == '')
             return url;
-        return ResourceHelper.addSlash(url.replace(ResourceHelper.root_uri, ResourceHelper.proxy_uri));
+        return ResourceHelper.addSlash(url.replace(root_uri, proxy_uri));
     }
 
     public static setHttp(http: HttpClient) {
@@ -187,7 +192,8 @@ export class ResourceHelper {
         return this.http;
     }
 
-    static getRootUri() {
-        return this.root_uri;
+    static getRootUri(resource: string) {
+        let root_uri = ResourceHelper.root_uri_map[resource] || ResourceHelper.root_uri_map['*'];
+        return ResourceHelper.addSlash(root_uri);
     }
 }

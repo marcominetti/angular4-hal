@@ -8,16 +8,16 @@ import {ExternalConfiguration} from './ExternalConfiguration';
 export class ExternalService {
 
     constructor(@Inject('ExternalConfigurationService') private externalConfigurationService: ExternalConfigurationHandlerInterface) {
-        ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
-        ResourceHelper.setRootUri(externalConfigurationService.getRootUri());
+        ResourceHelper.setProxyUriMap(externalConfigurationService.getProxyUriMap());
+        ResourceHelper.setRootUriMap(externalConfigurationService.getRootUriMap());
         ResourceHelper.setHttp(externalConfigurationService.getHttp());
     }
 
     public updateExternalConfigurationHandlerInterface(externalConfigurationService: ExternalConfigurationHandlerInterface) {
 	this.externalConfigurationService = externalConfigurationService;
 
-        ResourceHelper.setProxyUri(externalConfigurationService.getProxyUri());
-        ResourceHelper.setRootUri(externalConfigurationService.getRootUri());
+        ResourceHelper.setProxyUriMap(externalConfigurationService.getProxyUriMap());
+        ResourceHelper.setRootUriMap(externalConfigurationService.getRootUriMap());
         ResourceHelper.setHttp(externalConfigurationService.getHttp());
     }
 
@@ -25,16 +25,16 @@ export class ExternalService {
         return this.externalConfigurationService.getExternalConfiguration();
     }
 
-    public getProxyUri(): string {
-        return this.externalConfigurationService.getProxyUri();
+    public getProxyUri(): Map<string,string> {
+        return this.externalConfigurationService.getProxyUriMap();
     }
 
-    public getRootUri(): string {
-        return this.externalConfigurationService.getRootUri();
+    public getRootUri(): Map<string,string> {
+        return this.externalConfigurationService.getRootUriMap();
     }
 
-    public getURL(): string {
-        return ResourceHelper.getURL();
+    public getURL(resource: string): string {
+        return ResourceHelper.getURL(resource);
     }
 
     public getHttp(): HttpClient {

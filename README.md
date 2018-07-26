@@ -30,12 +30,22 @@ import {HttpClient} from "@angular/common/http";
 @Injectable()
 export class ExternalConfigurationService implements ExternalConfigurationHandlerInterface {
 
-  getProxyUri(): string {
-    return "http://proxy.url/api/";
+  getProxyUriMap(): Map<string,string> {
+    let map = new Map<string, string>();
+    // default
+    map.set("*", "http://proxy.url/api/")
+    // override for resource
+    map.set("resource", "http://proxy.url/api/");
+    return map;
   }
 
-  getRootUri(): string {
-    return "https://serviceip.tomcat:8080/APP/";
+  getRootUriMap(): Map<string,string> {
+    let map = new Map<string, string>();
+    // default
+    map.set("*", "https://serviceip.tomcat:8080/APP/");
+    // override for resource
+    map.set("resource", "https://serviceip.tomcat:8080/APP/");
+    return map;
   }
 
   getHttp(): HttpClient {
@@ -286,11 +296,3 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 + updateRelation() // update relation
 + substituteRelation()
 + deleteRelation()    // remove relation
-
-### ResourceHelper
-+ headers
-+ getURL()
-+ getHttp()
-
-## Roadmap
-+ caching
