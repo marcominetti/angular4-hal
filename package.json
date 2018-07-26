@@ -53,10 +53,10 @@
     "growl": "1.10.5"
   },
   "dependencies": {
-    "@angular/common": "~6.0.5",
-    "@angular/core": "~6.0.5",
-    "rxjs": "~6.2.1",
-    "zone.js": "^0.8.18"
+    "@angular/common": "^6.0.9",
+    "@angular/core": "^6.0.9",
+    "rxjs": "^6.2.2",
+    "zone.js": "^0.8.26"
   },
   "engines": {
     "node": ">=4"
