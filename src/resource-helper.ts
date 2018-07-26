@@ -162,8 +162,8 @@ export class ResourceHelper {
     }
 
     public static getURL(resource: string): string {
-        let proxy_uri = ResourceHelper.proxy_uri_map[resource] || ResourceHelper.proxy_uri_map['*'];
-        let root_uri = ResourceHelper.root_uri_map[resource] || ResourceHelper.root_uri_map['*'];
+        let proxy_uri = ResourceHelper.proxy_uri_map.get(resource) || ResourceHelper.proxy_uri_map.get('*');
+        let root_uri = ResourceHelper.root_uri_map.get(resource) || ResourceHelper.root_uri_map.get('*');
         return proxy_uri && proxy_uri != '' ?
             ResourceHelper.addSlash(proxy_uri) :
             ResourceHelper.addSlash(root_uri);
@@ -177,8 +177,8 @@ export class ResourceHelper {
     }
 
     public static getProxy(resource: string, url: string): string {
-        let proxy_uri = ResourceHelper.proxy_uri_map[resource] || ResourceHelper.proxy_uri_map['*'];
-        let root_uri = ResourceHelper.root_uri_map[resource] || ResourceHelper.root_uri_map['*'];
+        let proxy_uri = ResourceHelper.proxy_uri_map.get(resource) || ResourceHelper.proxy_uri_map.get('*');
+        let root_uri = ResourceHelper.root_uri_map.get(resource) || ResourceHelper.root_uri_map.get('*');
         if (!proxy_uri || proxy_uri == '')
             return url;
         return ResourceHelper.addSlash(url.replace(root_uri, proxy_uri));
@@ -193,7 +193,7 @@ export class ResourceHelper {
     }
 
     static getRootUri(resource: string) {
-        let root_uri = ResourceHelper.root_uri_map[resource] || ResourceHelper.root_uri_map['*'];
+        let root_uri = ResourceHelper.root_uri_map.get(resource) || ResourceHelper.root_uri_map.get('*');
         return ResourceHelper.addSlash(root_uri);
     }
 }

@@ -144,8 +144,8 @@ var ResourceHelper = /** @class */ (function () {
         ResourceHelper.root_uri_map = root_uri;
     };
     ResourceHelper.getURL = function (resource) {
-        var proxy_uri = ResourceHelper.proxy_uri_map[resource] || ResourceHelper.proxy_uri_map['*'];
-        var root_uri = ResourceHelper.root_uri_map[resource] || ResourceHelper.root_uri_map['*'];
+        var proxy_uri = ResourceHelper.proxy_uri_map.get(resource) || ResourceHelper.proxy_uri_map.get('*');
+        var root_uri = ResourceHelper.root_uri_map.get(resource) || ResourceHelper.root_uri_map.get('*');
         return proxy_uri && proxy_uri != '' ?
             ResourceHelper.addSlash(proxy_uri) :
             ResourceHelper.addSlash(root_uri);
@@ -157,8 +157,8 @@ var ResourceHelper = /** @class */ (function () {
         return uri;
     };
     ResourceHelper.getProxy = function (resource, url) {
-        var proxy_uri = ResourceHelper.proxy_uri_map[resource] || ResourceHelper.proxy_uri_map['*'];
-        var root_uri = ResourceHelper.root_uri_map[resource] || ResourceHelper.root_uri_map['*'];
+        var proxy_uri = ResourceHelper.proxy_uri_map.get(resource) || ResourceHelper.proxy_uri_map.get('*');
+        var root_uri = ResourceHelper.root_uri_map.get(resource) || ResourceHelper.root_uri_map.get('*');
         if (!proxy_uri || proxy_uri == '')
             return url;
         return ResourceHelper.addSlash(url.replace(root_uri, proxy_uri));
@@ -170,7 +170,7 @@ var ResourceHelper = /** @class */ (function () {
         return this.http;
     };
     ResourceHelper.getRootUri = function (resource) {
-        var root_uri = ResourceHelper.root_uri_map[resource] || ResourceHelper.root_uri_map['*'];
+        var root_uri = ResourceHelper.root_uri_map.get(resource) || ResourceHelper.root_uri_map.get('*');
         return ResourceHelper.addSlash(root_uri);
     };
     return ResourceHelper;

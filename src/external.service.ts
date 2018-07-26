@@ -25,11 +25,11 @@ export class ExternalService {
         return this.externalConfigurationService.getExternalConfiguration();
     }
 
-    public getProxyUri(): Map<string,string> {
+    public getProxyUriMap(): Map<string,string> {
         return this.externalConfigurationService.getProxyUriMap();
     }
 
-    public getRootUri(): Map<string,string> {
+    public getRootUriMap(): Map<string,string> {
         return this.externalConfigurationService.getRootUriMap();
     }
 

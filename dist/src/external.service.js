@@ -16,10 +16,10 @@ var ExternalService = /** @class */ (function () {
     ExternalService.prototype.getExternalConfiguration = function () {
         return this.externalConfigurationService.getExternalConfiguration();
     };
-    ExternalService.prototype.getProxyUri = function () {
+    ExternalService.prototype.getProxyUriMap = function () {
         return this.externalConfigurationService.getProxyUriMap();
     };
-    ExternalService.prototype.getRootUri = function () {
+    ExternalService.prototype.getRootUriMap = function () {
         return this.externalConfigurationService.getRootUriMap();
     };
     ExternalService.prototype.getURL = function (resource) {
