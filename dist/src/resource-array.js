@@ -16,7 +16,7 @@ var ResourceArray = /** @class */ (function () {
             return _this.result.length;
         };
         this.init = function (type, response, sortInfo) {
-            var result = ResourceHelper.createEmptyResult(_this._embedded);
+            var result = ResourceHelper.createEmptyResult(_this.resource, _this._embedded);
             result.sortInfo = sortInfo;
             ResourceHelper.instantiateResourceCollection(type, response, result);
             return result;
@@ -24,27 +24,27 @@ var ResourceArray = /** @class */ (function () {
         // Load next page
         this.next = function (type) {
             if (_this.next_uri) {
-                return ResourceHelper.getHttp().get(ResourceHelper.getProxy(_this.next_uri), { headers: ResourceHelper.headers }).pipe(map(function (response) { return _this.init(type, response, _this.sortInfo); }), catchError(function (error) { return observableThrowError(error); }));
+                return ResourceHelper.getHttp().get(ResourceHelper.getProxy(_this.resource, _this.next_uri), { headers: ResourceHelper.headers }).pipe(map(function (response) { return _this.init(type, response, _this.sortInfo); }), catchError(function (error) { return observableThrowError(error); }));
             }
             return observableThrowError('no next defined');
         };
         this.prev = function (type) {
             if (_this.prev_uri) {
-                return ResourceHelper.getHttp().get(ResourceHelper.getProxy(_this.prev_uri), { headers: ResourceHelper.headers }).pipe(map(function (response) { return _this.init(type, response, _this.sortInfo); }), catchError(function (error) { return observableThrowError(error); }));
+                return ResourceHelper.getHttp().get(ResourceHelper.getProxy(_this.resource, _this.prev_uri), { headers: ResourceHelper.headers }).pipe(map(function (response) { return _this.init(type, response, _this.sortInfo); }), catchError(function (error) { return observableThrowError(error); }));
             }
             return observableThrowError('no prev defined');
         };
         // Load first page
         this.first = function (type) {
             if (_this.first_uri) {
-                return ResourceHelper.getHttp().get(ResourceHelper.getProxy(_this.first_uri), { headers: ResourceHelper.headers }).pipe(map(function (response) { return _this.init(type, response, _this.sortInfo); }), catchError(function (error) { return observableThrowError(error); }));
+                return ResourceHelper.getHttp().get(ResourceHelper.getProxy(_this.resource, _this.first_uri), { headers: ResourceHelper.headers }).pipe(map(function (response) { return _this.init(type, response, _this.sortInfo); }), catchError(function (error) { return observableThrowError(error); }));
             }
             return observableThrowError('no first defined');
         };
         // Load last page
         this.last = function (type) {
             if (_this.last_uri) {
-                return ResourceHelper.getHttp().get(ResourceHelper.getProxy(_this.last_uri), { headers: ResourceHelper.headers }).pipe(map(function (response) { return _this.init(type, response, _this.sortInfo); }), catchError(function (error) { return observableThrowError(error); }));
+                return ResourceHelper.getHttp().get(ResourceHelper.getProxy(_this.resource, _this.last_uri), { headers: ResourceHelper.headers }).pipe(map(function (response) { return _this.init(type, response, _this.sortInfo); }), catchError(function (error) { return observableThrowError(error); }));
             }
             return observableThrowError('no last defined');
         };
@@ -53,11 +53,11 @@ var ResourceArray = /** @class */ (function () {
             if (_this.self_uri) {
                 _this.self_uri = _this.self_uri.replace('{?page,size,sort}', '');
                 _this.self_uri = _this.self_uri.replace('{&sort}', '');
-                var urlParsed = url.parse(ResourceHelper.getProxy(_this.self_uri));
+                var urlParsed = url.parse(ResourceHelper.getProxy(_this.resource, _this.self_uri));
                 var query = ResourceArray.replaceOrAdd(urlParsed.query, 'size', _this.pageSize.toString());
                 query = ResourceArray.replaceOrAdd(query, 'page', pageNumber.toString());
                 var uri = urlParsed.query ?
-                    ResourceHelper.getProxy(_this.self_uri).replace(urlParsed.query, query) : ResourceHelper.getProxy(_this.self_uri).concat(query);
+                    ResourceHelper.getProxy(_this.resource, _this.self_uri).replace(urlParsed.query, query) : ResourceHelper.getProxy(_this.resource, _this.self_uri).concat(query);
                 uri = _this.addSortInfo(uri);
                 return ResourceHelper.getHttp().get(uri, { headers: ResourceHelper.headers }).pipe(map(function (response) { return _this.init(type, response, _this.sortInfo); }), catchError(function (error) { return observableThrowError(error); }));
             }
@@ -72,7 +72,7 @@ var ResourceArray = /** @class */ (function () {
             if (_this.self_uri) {
                 _this.self_uri = _this.self_uri.replace('{?page,size,sort}', '');
                 _this.self_uri = _this.self_uri.replace('{&sort}', '');
-                var uri = ResourceHelper.getProxy(_this.self_uri).concat('?', 'size=', _this.pageSize.toString(), '&page=', _this.pageNumber.toString());
+                var uri = ResourceHelper.getProxy(_this.resource, _this.self_uri).concat('?', 'size=', _this.pageSize.toString(), '&page=', _this.pageNumber.toString());
                 uri = _this.addSortInfo(uri);
                 return ResourceHelper.getHttp().get(uri, { headers: ResourceHelper.headers }).pipe(map(function (response) { return _this.init(type, response, sort); }), catchError(function (error) { return observableThrowError(error); }));
             }
@@ -81,7 +81,7 @@ var ResourceArray = /** @class */ (function () {
         // Load page with given size
         this.size = function (type, size) {
             if (_this.self_uri) {
-                var uri = ResourceHelper.getProxy(_this.self_uri).concat('?', 'size=', size.toString());
+                var uri = ResourceHelper.getProxy(_this.resource, _this.self_uri).concat('?', 'size=', size.toString());
                 uri = _this.addSortInfo(uri);
                 return ResourceHelper.getHttp().get(uri, { headers: ResourceHelper.headers }).pipe(map(function (response) { return _this.init(type, response, _this.sortInfo); }), catchError(function (error) { return observableThrowError(error); }));
             }

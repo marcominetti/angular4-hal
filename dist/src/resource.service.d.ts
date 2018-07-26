@@ -4,37 +4,31 @@ import { Sort } from './sort';
 import { ResourceArray } from './resource-array';
 import { ExternalService } from './external.service';
 import { HalOptions } from './rest.service';
-import { SubTypeBuilder } from './subtype-builder';
 export declare class ResourceService {
     private externalService;
+    private resource;
     constructor(externalService: ExternalService);
-    private static getURL();
+    setResourceName(resource: string): void;
     getAll<T extends Resource>(type: {
         new (): T;
-    }, resource: string, _embedded: string, options?: HalOptions): Observable<ResourceArray<T>>;
+    }, _embedded: string, options?: HalOptions): Observable<ResourceArray<T>>;
     get<T extends Resource>(type: {
         new (): T;
-    }, resource: string, id: any): Observable<T>;
-    getBySelfLink<T extends Resource>(type: {
-        new (): T;
-    }, resourceLink: string): Observable<T>;
+    }, id: any): Observable<T>;
     search<T extends Resource>(type: {
         new (): T;
-    }, query: string, resource: string, _embedded: string, options?: HalOptions): Observable<ResourceArray<T>>;
+    }, query: string, _embedded: string, options?: HalOptions): Observable<ResourceArray<T>>;
     searchSingle<T extends Resource>(type: {
         new (): T;
-    }, query: string, resource: string, options?: HalOptions): Observable<T>;
+    }, query: string, options?: HalOptions): Observable<T>;
     customQuery<T extends Resource>(type: {
         new (): T;
-    }, query: string, resource: string, _embedded: string, options?: HalOptions): Observable<ResourceArray<T>>;
+    }, query: string, _embedded: string, options?: HalOptions): Observable<ResourceArray<T>>;
     getByRelation<T extends Resource>(type: {
         new (): T;
     }, resourceLink: string): Observable<T>;
-    getByRelationArray<T extends Resource>(type: {
-        new (): T;
-    }, resourceLink: string, _embedded: string, builder?: SubTypeBuilder): Observable<ResourceArray<T>>;
-    count(resource: string): Observable<number>;
-    create<T extends Resource>(selfResource: string, entity: T): Observable<Observable<never> | T>;
+    count(): Observable<number>;
+    create<T extends Resource>(entity: T): Observable<Observable<never> | T>;
     update<T extends Resource>(entity: T): Observable<Observable<never> | T>;
     patch<T extends Resource>(entity: T): Observable<Observable<never> | T>;
     delete<T extends Resource>(entity: T): Observable<Object>;
@@ -63,7 +57,5 @@ export declare class ResourceService {
     size<T extends Resource>(resourceArray: ResourceArray<T>, type: {
         new (): T;
     }, size: number): Observable<ResourceArray<T>>;
-    private getResourceUrl(resource?);
-    private setUrls<T>(result);
-    private setUrlsResource<T>(result);
+    private getResourceUrl();
 }

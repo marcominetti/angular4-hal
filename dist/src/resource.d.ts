@@ -2,8 +2,6 @@ import { Observable } from 'rxjs';
 import { HalOptions } from './rest.service';
 import { SubTypeBuilder } from './subtype-builder';
 export declare abstract class Resource {
-    proxyUrl: string;
-    rootUrl: string;
     _links: any;
     _subtypes: Map<string, any>;
     subtypes: Map<string, any>;

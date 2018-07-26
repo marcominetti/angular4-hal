@@ -7,8 +7,8 @@ var RestService = /** @class */ (function () {
         this.injector = injector;
         this._embedded = '_embedded';
         this.type = type;
-        this.resource = resource;
         this.resourceService = injector.get(ResourceService);
+        this.resourceService.setResourceName(resource);
         if (!isNullOrUndefined(_embedded))
             this._embedded = _embedded;
     }
@@ -20,7 +20,7 @@ var RestService = /** @class */ (function () {
     };
     RestService.prototype.getAll = function (options) {
         var _this = this;
-        return this.resourceService.getAll(this.type, this.resource, this._embedded, options).pipe(mergeMap(function (resourceArray) {
+        return this.resourceService.getAll(this.type, this._embedded, options).pipe(mergeMap(function (resourceArray) {
             if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
                 options.notPaged = false;
                 options.size = resourceArray.totalElements;
@@ -33,14 +33,14 @@ var RestService = /** @class */ (function () {
         }));
     };
     RestService.prototype.get = function (id) {
-        return this.resourceService.get(this.type, this.resource, id);
+        return this.resourceService.get(this.type, id);
     };
-    RestService.prototype.getBySelfLink = function (selfLink) {
-        return this.resourceService.getBySelfLink(this.type, selfLink);
-    };
+    // public getBySelfLink(selfLink: string): Observable<T> {
+    //     return this.resourceService.getBySelfLink(this.type, selfLink);
+    // }
     RestService.prototype.search = function (query, options) {
         var _this = this;
-        return this.resourceService.search(this.type, query, this.resource, this._embedded, options).pipe(mergeMap(function (resourceArray) {
+        return this.resourceService.search(this.type, query, this._embedded, options).pipe(mergeMap(function (resourceArray) {
             if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
                 options.notPaged = false;
                 options.size = resourceArray.totalElements;
@@ -53,11 +53,11 @@ var RestService = /** @class */ (function () {
         }));
     };
     RestService.prototype.searchSingle = function (query, options) {
-        return this.resourceService.searchSingle(this.type, query, this.resource, options);
+        return this.resourceService.searchSingle(this.type, query, options);
     };
     RestService.prototype.customQuery = function (query, options) {
         var _this = this;
-        return this.resourceService.customQuery(this.type, query, this.resource, this._embedded, options).pipe(mergeMap(function (resourceArray) {
+        return this.resourceService.customQuery(this.type, query, this._embedded, options).pipe(mergeMap(function (resourceArray) {
             if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
                 options.notPaged = false;
                 options.size = resourceArray.totalElements;
@@ -69,21 +69,21 @@ var RestService = /** @class */ (function () {
             }
         }));
     };
-    RestService.prototype.getByRelationArray = function (relation, builder) {
-        var _this = this;
-        return this.resourceService.getByRelationArray(this.type, relation, this._embedded, builder).pipe(map(function (resourceArray) {
-            _this.resourceArray = resourceArray;
-            return resourceArray.result;
-        }));
-    };
+    // public getByRelationArray(relation: string, builder?: SubTypeBuilder): Observable<T[]> {
+    //     return this.resourceService.getByRelationArray(this.type, relation, this._embedded, builder).pipe(
+    //         map((resourceArray: ResourceArray<T>) => {
+    //             this.resourceArray = resourceArray;
+    //             return resourceArray.result;
+    //         }));
+    // }
     RestService.prototype.getByRelation = function (relation) {
         return this.resourceService.getByRelation(this.type, relation);
     };
     RestService.prototype.count = function () {
-        return this.resourceService.count(this.resource);
+        return this.resourceService.count();
     };
     RestService.prototype.create = function (entity) {
-        return this.resourceService.create(this.resource, entity);
+        return this.resourceService.create(entity);
     };
     RestService.prototype.update = function (entity) {
         return this.resourceService.update(entity);

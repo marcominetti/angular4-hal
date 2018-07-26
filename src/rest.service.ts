@@ -15,7 +15,6 @@ export type HalOptions = { notPaged?: boolean, size?: number, sort?: Sort[], par
 
 export class RestService<T extends Resource> {
     private type: any;
-    private resource: string;
     public resourceArray: ResourceArray<T>;
     private resourceService: ResourceService;
 
@@ -26,9 +25,8 @@ export class RestService<T extends Resource> {
                 private injector: Injector,
                 _embedded?: string) {
         this.type = type;
-        this.resource = resource;
         this.resourceService = injector.get(ResourceService);
-        this.resourceService.resource = resource;
+        this.resourceService.setResourceName(resource);
         if (!isNullOrUndefined(_embedded))
             this._embedded = _embedded;
     }
@@ -42,7 +40,7 @@ export class RestService<T extends Resource> {
     }
 
     public getAll(options?: HalOptions): Observable<T[]> {
-        return this.resourceService.getAll(this.type, this.resource, this._embedded, options).pipe(
+        return this.resourceService.getAll(this.type, this._embedded, options).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
                 if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
@@ -56,7 +54,7 @@ export class RestService<T extends Resource> {
     }
 
     public get(id: any): Observable<T> {
-        return this.resourceService.get(this.type, this.resource, id);
+        return this.resourceService.get(this.type, id);
     }
 
     // public getBySelfLink(selfLink: string): Observable<T> {
@@ -64,7 +62,7 @@ export class RestService<T extends Resource> {
     // }
 
     public search(query: string, options?: HalOptions): Observable<T[]> {
-        return this.resourceService.search(this.type, query, this.resource, this._embedded, options).pipe(
+        return this.resourceService.search(this.type, query, this._embedded, options).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
                 if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
@@ -78,11 +76,11 @@ export class RestService<T extends Resource> {
     }
 
     public searchSingle(query: string, options?: HalOptions): Observable<T> {
-        return this.resourceService.searchSingle(this.type, query, this.resource, options);
+        return this.resourceService.searchSingle(this.type, query, options);
     }
 
     public customQuery(query: string, options?: HalOptions): Observable<T[]> {
-        return this.resourceService.customQuery(this.type, query, this.resource, this._embedded, options).pipe(
+        return this.resourceService.customQuery(this.type, query, this._embedded, options).pipe(
             mergeMap((resourceArray: ResourceArray<T>) => {
                 if (options && options.notPaged && !isNullOrUndefined(resourceArray.first_uri)) {
                     options.notPaged = false;
@@ -108,11 +106,11 @@ export class RestService<T extends Resource> {
     }
 
     public count(): Observable<number> {
-        return this.resourceService.count(this.resource);
+        return this.resourceService.count();
     }
 
     public create(entity: T) {
-        return this.resourceService.create(this.resource, entity);
+        return this.resourceService.create(entity);
     }
 
     public update(entity: T) {

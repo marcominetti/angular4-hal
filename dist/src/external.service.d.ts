@@ -6,8 +6,8 @@ export declare class ExternalService {
     constructor(externalConfigurationService: ExternalConfigurationHandlerInterface);
     updateExternalConfigurationHandlerInterface(externalConfigurationService: ExternalConfigurationHandlerInterface): void;
     getExternalConfiguration(): ExternalConfiguration;
-    getProxyUri(): string;
-    getRootUri(): string;
-    getURL(): string;
+    getProxyUri(): Map<string, string>;
+    getRootUri(): Map<string, string>;
+    getURL(resource: string): string;
     getHttp(): HttpClient;
 }

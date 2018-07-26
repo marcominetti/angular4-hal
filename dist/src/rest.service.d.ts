@@ -3,7 +3,6 @@ import { Resource } from './resource';
 import { ResourceArray } from './resource-array';
 import { Sort } from './sort';
 import { Injector } from '@angular/core';
-import { SubTypeBuilder } from './subtype-builder';
 export declare type HalParam = {
     key: string;
     value: string | number | boolean;
@@ -17,7 +16,6 @@ export declare type HalOptions = {
 export declare class RestService<T extends Resource> {
     private injector;
     private type;
-    private resource;
     resourceArray: ResourceArray<T>;
     private resourceService;
     private _embedded;
@@ -28,11 +26,9 @@ export declare class RestService<T extends Resource> {
     protected static handleError(error: any): Observable<never>;
     getAll(options?: HalOptions): Observable<T[]>;
     get(id: any): Observable<T>;
-    getBySelfLink(selfLink: string): Observable<T>;
     search(query: string, options?: HalOptions): Observable<T[]>;
     searchSingle(query: string, options?: HalOptions): Observable<T>;
     customQuery(query: string, options?: HalOptions): Observable<T[]>;
-    getByRelationArray(relation: string, builder?: SubTypeBuilder): Observable<T[]>;
     getByRelation(relation: string): Observable<T>;
     count(): Observable<number>;
     create(entity: T): Observable<Observable<never> | T>;

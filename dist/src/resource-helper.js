@@ -63,8 +63,9 @@ var ResourceHelper = /** @class */ (function () {
         }
         return result;
     };
-    ResourceHelper.createEmptyResult = function (_embedded) {
+    ResourceHelper.createEmptyResult = function (resource, _embedded) {
         var resourceArray = new ResourceArray();
+        resourceArray.resource = resource;
         resourceArray._embedded = _embedded;
         return resourceArray;
     };
@@ -136,16 +137,18 @@ var ResourceHelper = /** @class */ (function () {
         }
         return entity;
     };
-    ResourceHelper.setProxyUri = function (proxy_uri) {
-        ResourceHelper.proxy_uri = proxy_uri;
+    ResourceHelper.setProxyUriMap = function (proxy_uri) {
+        ResourceHelper.proxy_uri_map = proxy_uri;
     };
-    ResourceHelper.setRootUri = function (root_uri) {
-        ResourceHelper.root_uri = root_uri;
+    ResourceHelper.setRootUriMap = function (root_uri) {
+        ResourceHelper.root_uri_map = root_uri;
     };
-    ResourceHelper.getURL = function () {
-        return ResourceHelper.proxy_uri && ResourceHelper.proxy_uri != '' ?
-            ResourceHelper.addSlash(ResourceHelper.proxy_uri) :
-            ResourceHelper.addSlash(ResourceHelper.root_uri);
+    ResourceHelper.getURL = function (resource) {
+        var proxy_uri = ResourceHelper.proxy_uri_map[resource] || ResourceHelper.proxy_uri_map['*'];
+        var root_uri = ResourceHelper.root_uri_map[resource] || ResourceHelper.root_uri_map['*'];
+        return proxy_uri && proxy_uri != '' ?
+            ResourceHelper.addSlash(proxy_uri) :
+            ResourceHelper.addSlash(root_uri);
     };
     ResourceHelper.addSlash = function (uri) {
         var uriParsed = url.parse(uri);
@@ -153,10 +156,12 @@ var ResourceHelper = /** @class */ (function () {
             return uri + '/';
         return uri;
     };
-    ResourceHelper.getProxy = function (url) {
-        if (!ResourceHelper.proxy_uri || ResourceHelper.proxy_uri == '')
+    ResourceHelper.getProxy = function (resource, url) {
+        var proxy_uri = ResourceHelper.proxy_uri_map[resource] || ResourceHelper.proxy_uri_map['*'];
+        var root_uri = ResourceHelper.root_uri_map[resource] || ResourceHelper.root_uri_map['*'];
+        if (!proxy_uri || proxy_uri == '')
             return url;
-        return ResourceHelper.addSlash(url.replace(ResourceHelper.root_uri, ResourceHelper.proxy_uri));
+        return ResourceHelper.addSlash(url.replace(root_uri, proxy_uri));
     };
     ResourceHelper.setHttp = function (http) {
         this.http = http;
@@ -164,8 +169,9 @@ var ResourceHelper = /** @class */ (function () {
     ResourceHelper.getHttp = function () {
         return this.http;
     };
-    ResourceHelper.getRootUri = function () {
-        return this.root_uri;
+    ResourceHelper.getRootUri = function (resource) {
+        var root_uri = ResourceHelper.root_uri_map[resource] || ResourceHelper.root_uri_map['*'];
+        return ResourceHelper.addSlash(root_uri);
     };
     return ResourceHelper;
 }());

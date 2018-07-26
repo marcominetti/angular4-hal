@@ -4,8 +4,7 @@ import { ArrayInterface } from './array-interface';
 import { Resource } from './resource';
 export declare class ResourceArray<T extends Resource> implements ArrayInterface<T> {
     sortInfo: Sort[];
-    proxyUrl: string;
-    rootUrl: string;
+    resource: string;
     self_uri: string;
     next_uri: string;
     prev_uri: string;

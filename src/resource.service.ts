@@ -15,9 +15,13 @@ import {SubTypeBuilder} from './subtype-builder';
 @Injectable()
 export class ResourceService {
 
-    public resource: string;
+    private resource: string;
 
     constructor(private externalService: ExternalService) {
+    }
+
+    public setResourceName(resource: string){
+        this.resource = resource;
     }
 
     public getAll<T extends Resource>(type: { new(): T }, _embedded: string, options?: HalOptions): Observable<ResourceArray<T>> {
@@ -119,8 +123,8 @@ export class ResourceService {
             catchError(error => observableThrowError(error)),);
     }
 
-    public create<T extends Resource>(selfResource: string, entity: T) {
-        const uri = ResourceHelper.getURL(selfResource) + selfResource;
+    public create<T extends Resource>(entity: T) {
+        const uri = ResourceHelper.getURL(this.resource) + this.resource;
         const payload = ResourceHelper.resolveRelations(entity);
 
         //this.setUrlsResource(entity);

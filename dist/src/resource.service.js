@@ -9,37 +9,38 @@ var ResourceService = /** @class */ (function () {
     function ResourceService(externalService) {
         this.externalService = externalService;
     }
-    ResourceService.getURL = function () {
-        return ResourceHelper.getURL();
+    ResourceService.prototype.setResourceName = function (resource) {
+        this.resource = resource;
     };
-    ResourceService.prototype.getAll = function (type, resource, _embedded, options) {
-        var uri = this.getResourceUrl(resource);
+    ResourceService.prototype.getAll = function (type, _embedded, options) {
+        var uri = this.getResourceUrl();
         var params = ResourceHelper.optionParams(new HttpParams(), options);
-        var result = ResourceHelper.createEmptyResult(_embedded);
-        this.setUrls(result);
+        var result = ResourceHelper.createEmptyResult(this.resource, _embedded);
+        //this.setUrls(result);
         result.sortInfo = options ? options.sort : undefined;
         var observable = ResourceHelper.getHttp().get(uri, { headers: ResourceHelper.headers, params: params });
         return observable.pipe(map(function (response) { return ResourceHelper.instantiateResourceCollection(type, response, result); }), catchError(function (error) { return observableThrowError(error); }));
     };
-    ResourceService.prototype.get = function (type, resource, id) {
-        var uri = this.getResourceUrl(resource).concat('/', id);
+    ResourceService.prototype.get = function (type, id) {
+        var uri = this.getResourceUrl().concat('/', id);
         var result = new type();
-        this.setUrlsResource(result);
+        //this.setUrlsResource(result);
         var observable = ResourceHelper.getHttp().get(uri, { headers: ResourceHelper.headers });
         return observable.pipe(map(function (data) { return ResourceHelper.instantiateResource(result, data); }), catchError(function (error) { return observableThrowError(error); }));
     };
-    ResourceService.prototype.getBySelfLink = function (type, resourceLink) {
-        var result = new type();
-        this.setUrlsResource(result);
-        var observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(resourceLink), { headers: ResourceHelper.headers });
-        return observable.pipe(map(function (data) { return ResourceHelper.instantiateResource(result, data); }), catchError(function (error) { return observableThrowError(error); }));
-    };
-    ResourceService.prototype.search = function (type, query, resource, _embedded, options) {
-        var uri = this.getResourceUrl(resource).concat('/search/', query);
+    // public getBySelfLink<T extends Resource>(type: { new(): T }, resourceLink: string): Observable<T> {
+    //     const result: T = new type();
+    //     //this.setUrlsResource(result);
+    //     let observable = ResourceHelper.getHttp().get(ResourceHelper.getProxy(resourceLink), {headers: ResourceHelper.headers});
+    //     return observable.pipe(map(data => ResourceHelper.instantiateResource(result, data)),
+    //         catchError(error => observableThrowError(error)),);
+    // }
+    ResourceService.prototype.search = function (type, query, _embedded, options) {
+        var uri = this.getResourceUrl().concat('/search/', query);
         var params = ResourceHelper.optionParams(new HttpParams(), options);
-        var resultArray = ResourceHelper.createEmptyResult(_embedded);
+        var resultArray = ResourceHelper.createEmptyResult(this.resource, _embedded);
         var resultSingle = new type();
-        this.setUrls(resultArray);
+        //this.setUrls(resultArray);
         var observable = ResourceHelper.getHttp().get(uri, { headers: ResourceHelper.headers, params: params });
         return observable.pipe(map(function (response) {
             if (response.hasOwnProperty('_embedded')) {
@@ -52,42 +53,43 @@ var ResourceService = /** @class */ (function () {
             }
         }), catchError(function (error) { return observableThrowError(error); }));
     };
-    ResourceService.prototype.searchSingle = function (type, query, resource, options) {
-        var uri = this.getResourceUrl(resource).concat('/search/', query);
+    ResourceService.prototype.searchSingle = function (type, query, options) {
+        var uri = this.getResourceUrl().concat('/search/', query);
         var params = ResourceHelper.optionParams(new HttpParams(), options);
         var result = new type();
-        this.setUrlsResource(result);
+        //this.setUrlsResource(result);
         var observable = ResourceHelper.getHttp().get(uri, { headers: ResourceHelper.headers, params: params });
         return observable.pipe(map(function (response) { return ResourceHelper.instantiateResource(result, response); }), catchError(function (error) { return observableThrowError(error); }));
     };
-    ResourceService.prototype.customQuery = function (type, query, resource, _embedded, options) {
-        var uri = this.getResourceUrl(resource + query);
+    ResourceService.prototype.customQuery = function (type, query, _embedded, options) {
+        var uri = this.getResourceUrl() + query;
         var params = ResourceHelper.optionParams(new HttpParams(), options);
-        var result = ResourceHelper.createEmptyResult(_embedded);
-        this.setUrls(result);
+        var result = ResourceHelper.createEmptyResult(this.resource, _embedded);
+        //this.setUrls(result);
         var observable = ResourceHelper.getHttp().get(uri, { headers: ResourceHelper.headers, params: params });
         return observable.pipe(map(function (response) { return ResourceHelper.instantiateResourceCollection(type, response, result); }), catchError(function (error) { return observableThrowError(error); }));
     };
     ResourceService.prototype.getByRelation = function (type, resourceLink) {
         var result = new type();
-        this.setUrlsResource(result);
+        //this.setUrlsResource(result);
         var observable = ResourceHelper.getHttp().get(resourceLink, { headers: ResourceHelper.headers });
         return observable.pipe(map(function (data) { return ResourceHelper.instantiateResource(result, data); }), catchError(function (error) { return observableThrowError(error); }));
     };
-    ResourceService.prototype.getByRelationArray = function (type, resourceLink, _embedded, builder) {
-        var result = ResourceHelper.createEmptyResult(_embedded);
-        this.setUrls(result);
-        var observable = ResourceHelper.getHttp().get(resourceLink, { headers: ResourceHelper.headers });
-        return observable.pipe(map(function (response) { return ResourceHelper.instantiateResourceCollection(type, response, result, builder); }), catchError(function (error) { return observableThrowError(error); }));
-    };
-    ResourceService.prototype.count = function (resource) {
-        var uri = this.getResourceUrl(resource).concat('/search/countAll');
+    // public getByRelationArray<T extends Resource>(type: { new(): T }, resourceLink: string, _embedded: string, builder?: SubTypeBuilder): Observable<ResourceArray<T>> {
+    //     const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(_embedded);
+    //     //this.setUrls(result);
+    //     let observable = ResourceHelper.getHttp().get(resourceLink, {headers: ResourceHelper.headers});
+    //     return observable.pipe(map(response => ResourceHelper.instantiateResourceCollection(type, response, result, builder)),
+    //         catchError(error => observableThrowError(error)),);
+    // }
+    ResourceService.prototype.count = function () {
+        var uri = this.getResourceUrl().concat('/search/countAll');
         return ResourceHelper.getHttp().get(uri, { headers: ResourceHelper.headers, observe: 'body' }).pipe(map(function (response) { return Number(response.body); }), catchError(function (error) { return observableThrowError(error); }));
     };
-    ResourceService.prototype.create = function (selfResource, entity) {
-        var uri = ResourceHelper.getURL() + selfResource;
+    ResourceService.prototype.create = function (entity) {
+        var uri = ResourceHelper.getURL(this.resource) + this.resource;
         var payload = ResourceHelper.resolveRelations(entity);
-        this.setUrlsResource(entity);
+        //this.setUrlsResource(entity);
         var observable = ResourceHelper.getHttp().post(uri, payload, { headers: ResourceHelper.headers, observe: 'response' });
         return observable.pipe(map(function (response) {
             if (response.status >= 200 && response.status <= 207)
@@ -99,9 +101,9 @@ var ResourceService = /** @class */ (function () {
         }), catchError(function (error) { return observableThrowError(error); }));
     };
     ResourceService.prototype.update = function (entity) {
-        var uri = ResourceHelper.getProxy(entity._links.self.href);
+        var uri = ResourceHelper.getProxy(this.resource, entity._links.self.href);
         var payload = ResourceHelper.resolveRelations(entity);
-        this.setUrlsResource(entity);
+        //this.setUrlsResource(entity);
         var observable = ResourceHelper.getHttp().put(uri, payload, { headers: ResourceHelper.headers, observe: 'response' });
         return observable.pipe(map(function (response) {
             if (response.status >= 200 && response.status <= 207)
@@ -113,9 +115,9 @@ var ResourceService = /** @class */ (function () {
         }), catchError(function (error) { return observableThrowError(error); }));
     };
     ResourceService.prototype.patch = function (entity) {
-        var uri = ResourceHelper.getProxy(entity._links.self.href);
+        var uri = ResourceHelper.getProxy(this.resource, entity._links.self.href);
         var payload = ResourceHelper.resolveRelations(entity);
-        this.setUrlsResource(entity);
+        //this.setUrlsResource(entity);
         var observable = ResourceHelper.getHttp().patch(uri, payload, { headers: ResourceHelper.headers, observe: 'response' });
         return observable.pipe(map(function (response) {
             if (response.status >= 200 && response.status <= 207)
@@ -127,7 +129,7 @@ var ResourceService = /** @class */ (function () {
         }), catchError(function (error) { return observableThrowError(error); }));
     };
     ResourceService.prototype.delete = function (entity) {
-        var uri = ResourceHelper.getProxy(entity._links.self.href);
+        var uri = ResourceHelper.getProxy(this.resource, entity._links.self.href);
         return ResourceHelper.getHttp().delete(uri, { headers: ResourceHelper.headers }).pipe(catchError(function (error) { return observableThrowError(error); }));
     };
     ResourceService.prototype.hasNext = function (resourceArray) {
@@ -167,23 +169,8 @@ var ResourceService = /** @class */ (function () {
     ResourceService.prototype.size = function (resourceArray, type, size) {
         return resourceArray.size(type, size);
     };
-    ResourceService.prototype.getResourceUrl = function (resource) {
-        var url = ResourceService.getURL();
-        if (!url.endsWith('/')) {
-            url = url.concat('/');
-        }
-        if (resource) {
-            return url.concat(resource);
-        }
-        return url;
-    };
-    ResourceService.prototype.setUrls = function (result) {
-        result.proxyUrl = this.externalService.getProxyUri();
-        result.rootUrl = this.externalService.getRootUri();
-    };
-    ResourceService.prototype.setUrlsResource = function (result) {
-        result.proxyUrl = this.externalService.getProxyUri();
-        result.rootUrl = this.externalService.getRootUri();
+    ResourceService.prototype.getResourceUrl = function () {
+        return ResourceHelper.getURL(this.resource);
     };
     ResourceService.decorators = [
         { type: Injectable },
