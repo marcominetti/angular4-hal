@@ -1,5 +1,5 @@
 
-import {throwError as observableThrowError} from 'rxjs';
+import {throwError as observableThrowError, Observable} from 'rxjs';
 
 import {catchError, map} from 'rxjs/operators';
 import {Resource} from './resource';
@@ -11,7 +11,6 @@ import {ResourceArray} from './resource-array';
 import {ExternalService} from './external.service';
 import {HalOptions} from './rest.service';
 import {SubTypeBuilder} from './subtype-builder';
-import {Observable} from 'rxjs/internal/Observable';
 
 @Injectable()
 export class ResourceService {
@@ -56,11 +55,20 @@ export class ResourceService {
     public search<T extends Resource>(type: { new(): T }, query: string, resource: string, _embedded: string, options?: HalOptions): Observable<ResourceArray<T>> {
         const uri = this.getResourceUrl(resource).concat('/search/', query);
         const params = ResourceHelper.optionParams(new HttpParams(), options);
-        const result: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(_embedded);
+        const resultArray: ResourceArray<T> = ResourceHelper.createEmptyResult<T>(_embedded);
+        const resultSingle: T = new type();
 
-        this.setUrls(result);
+        this.setUrls(resultArray);
         let observable = ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers, params: params});
-        return observable.pipe(map(response => ResourceHelper.instantiateResourceCollection(type, response, result)),
+        return observable.pipe(map(response => {
+                if (response.hasOwnProperty('_embedded')) {
+                    return ResourceHelper.instantiateResourceCollection(type, response, resultArray);
+                } else {
+                    let resourceArray: ResourceArray<T> = new ResourceArray<T>();
+                    resourceArray.push(ResourceHelper.instantiateResource(resultSingle, response));
+                    return resourceArray;
+                }
+            }),
             catchError(error => observableThrowError(error)),);
     }
 
