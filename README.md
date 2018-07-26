@@ -286,13 +286,17 @@ https://angular.io/guide/http#intercepting-all-requests-or-responses
 + first()
 + last()
 + count() require implementation server-side custom repository method countAll
-+ totalElements()
 
 
 ### Resource
 + getRelationArray()
 + getRelation()
-+ addRelation()   // add relation
-+ updateRelation() // update relation
++ addRelation()
++ updateRelation()
 + substituteRelation()
-+ deleteRelation()    // remove relation
++ deleteRelation()
+
+## RoadMap
++ add support for projections
++ refactor HalParam/HalOptions
++ drop server-side implementation requirements for count()
