@@ -1,9 +1,9 @@
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Resource} from './resource';
-import {ResourceArray} from './resource-array';
-import {HalOptions} from './rest.service';
-import {SubTypeBuilder} from './subtype-builder';
-import {isNullOrUndefined} from 'util';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Resource } from './resource';
+import { ResourceArray } from './resource-array';
+import { HalOptions } from './rest.service';
+import { SubTypeBuilder } from './subtype-builder';
+import { isNullOrUndefined } from 'util';
 import * as url from 'url';
 
 export class ResourceHelper {
@@ -96,17 +96,23 @@ export class ResourceHelper {
     }
 
     static instantiateResourceCollection<T extends Resource>(type: { new(): T }, payload: any,
-                                                             result: ResourceArray<T>, builder?: SubTypeBuilder): ResourceArray<T> {
-        for (const embeddedClassName of Object.keys(payload[result._embedded])) {
-            let embedded: any = payload[result._embedded];
-            const items = embedded[embeddedClassName];
-            for (let item of items) {
-                let instance: T = new type();
-                instance = this.searchSubtypes(builder, embeddedClassName, instance);
+        result: ResourceArray<T>, builder?: SubTypeBuilder): ResourceArray<T> {
+        if (result.hasOwnProperty('_embedded')) {
+            for (const embeddedClassName of Object.keys(payload[result._embedded])) {
+                let embedded: any = payload[result._embedded];
+                const items = embedded[embeddedClassName];
+                for (let item of items) {
+                    let instance: T = new type();
+                    instance = this.searchSubtypes(builder, embeddedClassName, instance);
 
-                this.instantiateResource(instance, item);
-                result.push(instance);
+                    this.instantiateResource(instance, item);
+                    result.push(instance);
+                }
             }
+        } else {
+            let instance: T = new type();
+            this.instantiateResource(instance, result);
+            result.push(instance);
         }
 
         result.totalElements = payload.page ? payload.page.totalElements : result.length;

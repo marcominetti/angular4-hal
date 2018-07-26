@@ -1,13 +1,13 @@
 
-import {throwError as observableThrowError} from 'rxjs';
+import { throwError as observableThrowError } from 'rxjs';
 
-import {catchError, map} from 'rxjs/operators';
-import {Sort} from './sort';
-import {ArrayInterface} from './array-interface';
-import {ResourceHelper} from './resource-helper';
-import {Resource} from './resource';
+import { catchError, map } from 'rxjs/operators';
+import { Sort } from './sort';
+import { ArrayInterface } from './array-interface';
+import { ResourceHelper } from './resource-helper';
+import { Resource } from './resource';
 import * as url from 'url';
-import {Observable} from 'rxjs/internal/Observable';
+import { Observable } from 'rxjs/internal/Observable';
 
 export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
     public sortInfo: Sort[];
@@ -45,86 +45,95 @@ export class ResourceArray<T extends Resource> implements ArrayInterface<T> {
         return result;
     };
 
-// Load next page
+    // Load next page
     next = (type: { new(): T }): Observable<ResourceArray<T>> => {
         if (this.next_uri) {
-            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.next_uri), {headers: ResourceHelper.headers}).pipe(
+            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.next_uri), { headers: ResourceHelper.headers }).pipe(
                 map(response => this.init(type, response, this.sortInfo)),
-                catchError(error => observableThrowError(error)),);
+                catchError(error => observableThrowError(error)), );
         }
         return observableThrowError('no next defined');
     };
 
     prev = (type: { new(): T }): Observable<ResourceArray<T>> => {
         if (this.prev_uri) {
-            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.prev_uri), {headers: ResourceHelper.headers}).pipe(
+            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.prev_uri), { headers: ResourceHelper.headers }).pipe(
                 map(response => this.init(type, response, this.sortInfo)),
-                catchError(error => observableThrowError(error)),);
+                catchError(error => observableThrowError(error)), );
         }
         return observableThrowError('no prev defined');
     };
 
-// Load first page
+    // Load first page
 
     first = (type: { new(): T }): Observable<ResourceArray<T>> => {
         if (this.first_uri) {
-            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.first_uri), {headers: ResourceHelper.headers}).pipe(
+            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.first_uri), { headers: ResourceHelper.headers }).pipe(
                 map(response => this.init(type, response, this.sortInfo)),
-                catchError(error => observableThrowError(error)),);
+                catchError(error => observableThrowError(error)), );
         }
         return observableThrowError('no first defined');
     };
 
-// Load last page
+    // Load last page
 
     last = (type: { new(): T }): Observable<ResourceArray<T>> => {
         if (this.last_uri) {
-            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.last_uri), {headers: ResourceHelper.headers}).pipe(
+            return ResourceHelper.getHttp().get(ResourceHelper.getProxy(this.last_uri), { headers: ResourceHelper.headers }).pipe(
                 map(response => this.init(type, response, this.sortInfo)),
-                catchError(error => observableThrowError(error)),);
+                catchError(error => observableThrowError(error)), );
         }
         return observableThrowError('no last defined');
     };
 
-// Load page with given pageNumber
+    // Load page with given pageNumber
 
     page = (type: { new(): T }, pageNumber: number): Observable<ResourceArray<T>> => {
-        this.self_uri = this.self_uri.replace('{?page,size,sort}', '');
-        this.self_uri = this.self_uri.replace('{&sort}', '');
-        let urlParsed = url.parse(ResourceHelper.getProxy(this.self_uri));
-        let query: string = ResourceArray.replaceOrAdd(urlParsed.query, 'size', this.pageSize.toString());
-        query = ResourceArray.replaceOrAdd(query, 'page', pageNumber.toString());
+        if (this.self_uri) {
+            this.self_uri = this.self_uri.replace('{?page,size,sort}', '');
+            this.self_uri = this.self_uri.replace('{&sort}', '');
+            let urlParsed = url.parse(ResourceHelper.getProxy(this.self_uri));
+            let query: string = ResourceArray.replaceOrAdd(urlParsed.query, 'size', this.pageSize.toString());
+            query = ResourceArray.replaceOrAdd(query, 'page', pageNumber.toString());
 
 
-        let uri = urlParsed.query ?
-            ResourceHelper.getProxy(this.self_uri).replace(urlParsed.query, query) : ResourceHelper.getProxy(this.self_uri).concat(query);
-        uri = this.addSortInfo(uri);
-        return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers}).pipe(
-            map(response => this.init(type, response, this.sortInfo)),
-            catchError(error => observableThrowError(error)),);
+            let uri = urlParsed.query ?
+                ResourceHelper.getProxy(this.self_uri).replace(urlParsed.query, query) : ResourceHelper.getProxy(this.self_uri).concat(query);
+            uri = this.addSortInfo(uri);
+            return ResourceHelper.getHttp().get(uri, { headers: ResourceHelper.headers }).pipe(
+                map(response => this.init(type, response, this.sortInfo)),
+                catchError(error => observableThrowError(error)), );
+        }
+        return observableThrowError('no pages defined');
     };
 
-// Sort collection based on given sort attribute
+    // Sort collection based on given sort attribute
 
 
     sortElements = (type: { new(): T }, ...sort: Sort[]): Observable<ResourceArray<T>> => {
-        this.self_uri = this.self_uri.replace('{?page,size,sort}', '');
-        this.self_uri = this.self_uri.replace('{&sort}', '');
-        let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
-        uri = this.addSortInfo(uri);
-        return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers}).pipe(
-            map(response => this.init(type, response, sort)),
-            catchError(error => observableThrowError(error)),);
+        if (this.self_uri) {
+            this.self_uri = this.self_uri.replace('{?page,size,sort}', '');
+            this.self_uri = this.self_uri.replace('{&sort}', '');
+            let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', this.pageSize.toString(), '&page=', this.pageNumber.toString());
+            uri = this.addSortInfo(uri);
+            return ResourceHelper.getHttp().get(uri, { headers: ResourceHelper.headers }).pipe(
+                map(response => this.init(type, response, sort)),
+                catchError(error => observableThrowError(error)), );
+        }
+        return observableThrowError('no sort available');
     };
 
-// Load page with given size
+    // Load page with given size
 
     size = (type: { new(): T }, size: number): Observable<ResourceArray<T>> => {
-        let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', size.toString());
-        uri = this.addSortInfo(uri);
-        return ResourceHelper.getHttp().get(uri, {headers: ResourceHelper.headers}).pipe(
-            map(response => this.init(type, response, this.sortInfo)),
-            catchError(error => observableThrowError(error)),);
+        if (this.self_uri) {
+            let uri = ResourceHelper.getProxy(this.self_uri).concat('?', 'size=', size.toString());
+            uri = this.addSortInfo(uri);
+            return ResourceHelper.getHttp().get(uri, { headers: ResourceHelper.headers }).pipe(
+                map(response => this.init(type, response, this.sortInfo)),
+                catchError(error => observableThrowError(error)), );
+        }
+        return observableThrowError('no sort available');
     };
 
     private addSortInfo(uri: string) {
