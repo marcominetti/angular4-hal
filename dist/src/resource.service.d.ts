@@ -7,8 +7,7 @@ import { HalOptions } from './rest.service';
 export declare class ResourceService {
     private externalService;
     private resource;
-    constructor(externalService: ExternalService);
-    setResourceName(resource: string): void;
+    constructor(externalService: ExternalService, resource: string);
     getAll<T extends Resource>(type: {
         new (): T;
     }, _embedded: string, options?: HalOptions): Observable<ResourceArray<T>>;

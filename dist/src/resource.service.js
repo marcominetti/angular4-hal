@@ -6,12 +6,10 @@ import { HttpParams } from '@angular/common/http';
 import { ResourceArray } from './resource-array';
 import { ExternalService } from './external.service';
 var ResourceService = /** @class */ (function () {
-    function ResourceService(externalService) {
+    function ResourceService(externalService, resource) {
         this.externalService = externalService;
-    }
-    ResourceService.prototype.setResourceName = function (resource) {
         this.resource = resource;
-    };
+    }
     ResourceService.prototype.getAll = function (type, _embedded, options) {
         var uri = this.getResourceUrl();
         var params = ResourceHelper.optionParams(new HttpParams(), options);
@@ -177,7 +175,8 @@ var ResourceService = /** @class */ (function () {
     ];
     /** @nocollapse */
     ResourceService.ctorParameters = function () { return [
-        { type: ExternalService }
+        { type: ExternalService },
+        { type: String }
     ]; };
     return ResourceService;
 }());

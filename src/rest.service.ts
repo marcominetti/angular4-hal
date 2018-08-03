@@ -9,6 +9,7 @@ import {Injector} from '@angular/core';
 import {ResourceService} from './resource.service';
 import {SubTypeBuilder} from './subtype-builder';
 import {isNullOrUndefined} from 'util';
+import {ExternalService} from './external.service';
 
 export type HalParam = { key: string, value: string | number | boolean };
 export type HalOptions = { notPaged?: boolean, size?: number, sort?: Sort[], params?: HalParam[] };
@@ -25,8 +26,7 @@ export class RestService<T extends Resource> {
                 private injector: Injector,
                 _embedded?: string) {
         this.type = type;
-        this.resourceService = injector.get(ResourceService);
-        this.resourceService.setResourceName(resource);
+        this.resourceService = new ResourceService(injector.get(ExternalService), resource);
         if (!isNullOrUndefined(_embedded))
             this._embedded = _embedded;
     }

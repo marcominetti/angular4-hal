@@ -15,13 +15,7 @@ import {SubTypeBuilder} from './subtype-builder';
 @Injectable()
 export class ResourceService {
 
-    private resource: string;
-
-    constructor(private externalService: ExternalService) {
-    }
-
-    public setResourceName(resource: string){
-        this.resource = resource;
+    constructor(private externalService: ExternalService, private resource: string) {
     }
 
     public getAll<T extends Resource>(type: { new(): T }, _embedded: string, options?: HalOptions): Observable<ResourceArray<T>> {

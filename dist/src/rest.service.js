@@ -2,13 +2,13 @@ import { of as observableOf, throwError as observableThrowError } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import { ResourceService } from './resource.service';
 import { isNullOrUndefined } from 'util';
+import { ExternalService } from './external.service';
 var RestService = /** @class */ (function () {
     function RestService(type, resource, injector, _embedded) {
         this.injector = injector;
         this._embedded = '_embedded';
         this.type = type;
-        this.resourceService = injector.get(ResourceService);
-        this.resourceService.setResourceName(resource);
+        this.resourceService = new ResourceService(injector.get(ExternalService), resource);
         if (!isNullOrUndefined(_embedded))
             this._embedded = _embedded;
     }
